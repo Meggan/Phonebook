@@ -1,0 +1,87 @@
+void merge(NodePtr head, int lo, int mid, int hi){
+	NodePtr left = NULL;
+	NodePtr right = NULL;
+	int i,j,k;
+	i=lo;
+	j=mid+1;
+	k=0;
+	struct node *temp;
+
+	//split the linked list into 2 different linked lists
+	//printf("before the left while");
+	while(i<=mid){
+		//use makeNode?
+		temp = makeNode(head->firstName,head->lastName,head->phoneNumber);
+		if(left == NULL){
+			left = temp;
+		}
+		else{
+			temp->next = left;
+		}
+		left = temp;
+		i++;
+		head = head->next;
+	}
+	//printf("before the right while");
+	while(j<=hi){
+		if (head->next == NULL){
+			break;
+		}
+		temp = makeNode(head->firstName,head->lastName,head->phoneNumber);
+		if(right == NULL){
+			right = temp;
+		}
+		else{
+			temp->next = right;
+		}
+		right = temp;
+		j++;
+		head = head->next;
+		
+	}
+	//combine the left and right
+	while(left->next != NULL){
+		if(left->next == NULL){
+			left->next = right;
+		}
+	}
+	head = left;
+
+	while(head != NULL){
+		printf("%s %s %s\n", head->firstName, head->lastName, head->phoneNumber);
+		head=head->next;
+	}
+	
+}
+
+//merge sort
+// choosing merge sort now because if we load a file and then quick sort it and then save that file
+//the next time we load it, it will already be sorted and quick sort will be at its worst case
+//therefore I am switching it to merge sort
+void mergeSort(NodePtr head, int lo, int hi){
+	if(lo<hi){
+		//first you need to find the middle so you know where to split up to
+		//the mid is the last index of the left side
+		int mid = (hi+lo)/2;
+		//use recursion to keep calling itself
+		mergeSort(head, lo, mid); //this breaks up and sorts the left side
+		//since you are calling mergeSort again you pass back mid which is now hi in the 2nd pass
+		//eventually it will pass in 0 and 0 and since this is false it will move onto the next mergeSort
+		//you have to think of it like its only doing the if loop once sort of
+		//once you pass 0 and 0 it will be false so the first mergeSort is finished
+		mergeSort(head,mid+1,hi); //this breaks up and sorts the right side
+		//printf("lo=%d,mid=%d,hi=%d\n", lo,mid,hi);
+		merge(head,lo,mid,hi);
+	}
+
+}
+
+int findLength(NodePtr head){
+	int records = 1; //if I say its 0 it won't work properly
+	while(head->next != NULL){
+		records++;
+		head = head->next;
+	}
+	//printf("%d records\n", records);
+	return records;
+}
